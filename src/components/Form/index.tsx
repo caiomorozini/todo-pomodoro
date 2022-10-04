@@ -1,60 +1,71 @@
-﻿import React from "react";
-import Button from "../Button";
+﻿import React, { useState } from 'react';
+import { ITask } from '../../types/task';
+import Button from '../Button';
 import style from './Form.module.scss';
-import { ITask } from "../../types/task";
-class Form extends React.Component<{
-	setTasks: React.Dispatch<React.SetStateAction<ITask[]>>
-}> {
-	state = {
-		task: "",
-		time: "00:00"
-	}
+import { v4 as uuidv4 } from 'uuid';
 
-	addTask(event: React.FormEvent<HTMLFormElement>) {
-		event.preventDefault();
-		this.props.setTasks((prev) => [...prev, this.state]);
-		this.setState({ task: "", time: "00:00" });
-	}
-	render() {
-		return (
-			<form className={style.newTask} onSubmit={this.addTask.bind(this)}>
-				<div className={style.inputContainer}>
-					<label>
-						Name
-					</label>
-					<input
-						type="text"
-						name="task"
-						id="task"
-						placeholder="write a task"
-						value={this.state.task}
-						onChange={(e) => this.setState({ task: e.target.value })}
+interface Props {
+  setTasks: React.Dispatch<React.SetStateAction<ITask[]>>
+}
 
-						required
-					/>
-				</div>
-				<div className={style.inputContainer}>
-					<label htmlFor="time">
-						Time
-						<input
-							type="time"
-							step="1"
-							name="time"
-							id="time"
-							value={this.state.time}
-							onChange={(e) => this.setState({ ...this.state, time: e.target.value })}
-							min="00:00:00"
-							max="01:30:00"
-							required
-						/>
-					</label>
-				</div>
-				<Button
-					text="Add"
-				/>
-			</form>
-		);
-	}
+function Form({ setTasks }: Props) {
+  const [task, setTask] = useState("");
+  const [time, setTime] = useState("00:00");
+  function addTask(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setTasks(oldTasks =>
+      [
+        ...oldTasks,
+        {
+          task,
+          time,
+          selected: false,
+          completed: false,
+          id: uuidv4()
+        }
+      ]
+    )
+    setTask("");
+    setTime("00:00");
+  }
+
+  return (
+    <form className={style.newTask} onSubmit={addTask}>
+      <div className={style.inputContainer}>
+        <label htmlFor="task">
+          Add new task
+        </label>
+        <input
+          type="text"
+          name="task"
+          id="task"
+          value={task}
+          onChange={event => setTask(event.target.value)}
+          placeholder="What do you want to do?"
+          required
+        />
+      </div>
+      <div className={style.inputContainer}>
+        <label htmlFor="time">
+          Time
+        </label>
+        <input
+          type="time"
+          step="1"
+          name="time"
+          value={time}
+          onChange={event => setTime(event.target.value)}
+          id="time"
+          min="00:00:00"
+          max="01:30:00"
+          required
+        />
+      </div>
+      <Button type="submit">
+        Add
+      </Button>
+    </form>
+  )
 }
 
 export default Form;
