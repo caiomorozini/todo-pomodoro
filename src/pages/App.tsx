@@ -1,5 +1,6 @@
 import React from 'react';
-import Button from '../components/button';
+import Button from '../components/Button';
+import Chronometer from '../components/Chronometer';
 import Form from '../components/Form';
 import List from '../components/List';
 import style from './App.module.scss';
@@ -7,8 +8,9 @@ import style from './App.module.scss';
 function App() {
   return (
     <div className={style.AppStyle}>
-      <Form />
-      <List />
+      <Form/>
+      <List/>
+      <Chronometer/>
     </div>
   );
 }
